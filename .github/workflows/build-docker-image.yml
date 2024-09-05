@@ -1,0 +1,42 @@
+name: Build Docker images
+
+on:
+  pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+
+    strategy:
+      matrix:
+        memcached-version: ["1.6.29"]
+        unix-version: ["alpine"]
+
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          platforms: linux/amd64,linux/arm64
+
+      - name: Build the Docker image
+        shell: bash
+        run: |
+          docker buildx build . \
+            --platform linux/amd64,linux/arm64 \
+            --file Dockerfile \
+            --tag engineervix/memcached-sasl:${{ matrix.memcached-version }}-${{ matrix.unix-version }}-$(date +'%Y%m%d%H%M%S') \
+            --build-arg MEMCACHED_VERSION=${{ matrix.memcached-version }} \
+            --build-arg UNIX_VERSION=${{ matrix.unix-version }}
+
+
