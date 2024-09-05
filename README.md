@@ -22,7 +22,7 @@ I created it because I was trying to self-host Zulip via [Dokku](https://dokku.c
 1. Clone the repository to your local machine:
 
    ```bash
-   git clone https://github.com/your-repo/memcached-sasl.git
+   git clone https://github.com/engineervix/docker-memcached-sasl.git
    cd memcached-sasl
     ```
 
